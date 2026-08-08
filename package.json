@@ -1,0 +1,24 @@
+{
+  "name": "holdem-live",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "現場德州撲克輔助：純籌碼計算 + 手機發牌（可驗證公平 RNG）",
+  "scripts": {
+    "dev:server": "ENABLE_HTTPS=0 HTTP_PORT=8080 node server/index.js",
+    "dev:web": "npm --prefix web run dev",
+    "build": "npm --prefix web install && npm --prefix web run build",
+    "start": "node server/index.js",
+    "test": "node --test test/",
+    "lint": "eslint server test"
+  },
+  "dependencies": {
+    "express": "4.21.2",
+    "selfsigned": "2.4.1",
+    "ws": "8.18.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "9.17.0"
+  }
+}
