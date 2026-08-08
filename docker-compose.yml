@@ -1,0 +1,16 @@
+services:
+  holdem:
+    build: .
+    image: holdem-live
+    container_name: holdem-live
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      PUBLIC_HOST: ${PUBLIC_HOST:-localhost}
+    volumes:
+      - holdem-data:/data
+
+volumes:
+  holdem-data:
