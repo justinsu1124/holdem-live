@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import type { GameState } from '../types';
-import { Card, CardBack } from './Card';
+import { Card } from './Card';
+import { Felt } from './Felt';
 import { ActionBar } from './ActionBar';
 import { HostPanel } from './HostPanel';
 import { Fairness } from './Fairness';
@@ -69,72 +70,7 @@ export function Table({ state, send, onLeave, connected }: Props) {
 
       {tab === 'table' && (
         <main className="felt">
-          <div className="pot-area">
-            <div className="pot-label">底池</div>
-            <div className="pot-value">{hand ? hand.pot : 0}</div>
-            {hand && <div className="street">{hand.streetLabel}</div>}
-            {hand && hand.pots.length > 1 && (
-              <div className="sidepots">
-                {hand.pots.map((p, i) => (
-                  <span key={i}>{i === 0 ? '主池' : `邊池${i}`} {p.amount}</span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {dealMode && (
-            <div className="board">
-              {hand?.board.map((c) => <Card key={c} code={c} size="lg" />)}
-              {Array.from({ length: Math.max(0, 5 - (hand?.board.length ?? 0)) }).map((_, i) => (
-                <div key={`slot${i}`} className="card card-lg card-slot" />
-              ))}
-            </div>
-          )}
-
-          <div className="players">
-            {state.players.map((p) => (
-              <div
-                key={p.id}
-                className={[
-                  'player',
-                  p.isActor ? 'actor' : '',
-                  p.folded ? 'folded' : '',
-                  p.id === you?.id ? 'self' : '',
-                  !p.connected ? 'offline' : '',
-                ].join(' ')}
-              >
-                <div className="p-main">
-                  <span className="p-name">
-                    {p.seat === state.dealerSeat && <span className="dealer">D</span>}
-                    {p.name}
-                    {p.id === state.hostId && <span className="badge">主持</span>}
-                  </span>
-                  <span className="p-stack">{p.stack}</span>
-                </div>
-                <div className="p-sub">
-                  {p.allIn && <span className="tag allin">All-in</span>}
-                  {p.folded && <span className="tag">已蓋牌</span>}
-                  {p.sittingOut && !hand && <span className="tag">觀望</span>}
-                  {p.bet > 0 && <span className="bet">下注 {p.bet}</span>}
-                  {state.lastResult?.hands[p.id] && (
-                    <span className="tag win">{state.lastResult.hands[p.id].name}</span>
-                  )}
-                  {state.lastResult?.payouts[p.id] && (
-                    <span className="tag win">+{state.lastResult.payouts[p.id]}</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {dealMode && you?.hole && (
-            <div className="myhand">
-              <div className="myhand-cards" onPointerDown={() => setPeek(true)} onPointerUp={() => setPeek(false)} onPointerLeave={() => setPeek(false)}>
-                {peek ? you.hole.map((c) => <Card key={c} code={c} size="lg" />) : you.hole.map((c) => <CardBack key={c} size="lg" />)}
-              </div>
-              <div className="hint">{peek ? '放開即隱藏' : '長按查看你的底牌'}</div>
-            </div>
-          )}
+          <Felt state={state} peek={peek} onPeekChange={setPeek} />
 
           {!hand && state.lastResult && (
             <div className="result">

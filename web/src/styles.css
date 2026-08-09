@@ -74,7 +74,7 @@ input {
 .hint { color: var(--muted); font-size: 13px; line-height: 1.6; }
 
 /* ----------------------------------------------------------------- table */
-.table-screen { display: flex; flex-direction: column; min-height: 100%; padding-bottom: 132px; }
+.table-screen { display: flex; flex-direction: column; min-height: 100%; padding-bottom: 200px; }
 .topbar {
   display: flex; justify-content: space-between; align-items: center;
   padding: 10px 12px; background: rgba(0, 0, 0, .35); position: sticky; top: 0; z-index: 5;
@@ -86,13 +86,75 @@ input {
 .dot.ok { background: var(--ok); }
 
 .felt { padding: 12px; }
-.pot-area { text-align: center; margin: 10px 0 14px; }
-.pot-label { font-size: 12px; color: var(--muted); }
-.pot-value { font-size: 40px; font-weight: 800; color: var(--gold); line-height: 1.1; }
-.street { font-size: 13px; color: var(--muted); }
-.sidepots { display: flex; gap: 8px; justify-content: center; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.street { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.sidepots { display: flex; gap: 8px; justify-content: center; font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-.board { display: flex; gap: 6px; justify-content: center; margin-bottom: 16px; }
+.board { display: flex; gap: 4px; justify-content: center; }
+
+/* --------------------------------------------------------- oval poker table */
+.felt-oval { padding: 34px 10px 0; }
+.oval {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1.12;
+  border-radius: 50% / 50%;
+  background: radial-gradient(ellipse at 50% 40%, #157a48 0%, #0e5733 55%, #0a3f26 100%);
+  border: 10px solid #23140a;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, .55), 0 0 0 3px #3b2412, 0 14px 30px rgba(0, 0, 0, .5);
+}
+@media (min-width: 720px) { .oval { aspect-ratio: 1.35 / 1; max-width: 720px; } }
+
+.oval-center {
+  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
+  width: 76%; text-align: center;
+}
+.pot-pill {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+  background: rgba(0, 0, 0, .45); border: 1px solid rgba(240, 196, 25, .35);
+  color: var(--text); border-radius: 999px; padding: 4px 12px; font-size: 13px;
+}
+.pot-pill b { color: var(--gold); font-size: 16px; font-variant-numeric: tabular-nums; }
+.chip-icon {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: conic-gradient(#e8503a 0 25%, #fdfdf7 0 50%, #e8503a 0 75%, #fdfdf7 0);
+  border: 1px solid rgba(0, 0, 0, .5); display: inline-block;
+}
+
+.seat {
+  position: absolute; transform: translate(-50%, -50%);
+  width: 84px; text-align: center;
+  background: rgba(4, 16, 11, .82); border: 1px solid #2f4a3c; border-radius: 14px;
+  padding: 20px 4px 6px;
+}
+.seat.actor { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(240, 196, 25, .35), 0 0 18px rgba(240, 196, 25, .25); }
+.seat.self { background: rgba(30, 47, 38, .95); }
+.seat.folded { opacity: .42; }
+.seat.offline .seat-name { text-decoration: line-through; }
+.seat-avatar {
+  position: absolute; left: 50%; top: 0; transform: translate(-50%, -50%);
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(160deg, #2b4b3b, #16261e);
+  border: 2px solid #3f6a55; color: var(--text);
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+}
+.seat.actor .seat-avatar { border-color: var(--gold); }
+.seat-name { font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seat-stack { font-size: 13px; font-weight: 800; color: var(--gold); font-variant-numeric: tabular-nums; }
+.seat-badges { position: absolute; right: -6px; top: 2px; display: flex; flex-direction: column; gap: 2px; }
+.blind-b { font-size: 9px; background: #1f3a4d; border: 1px solid #2f5a75; border-radius: 6px; padding: 0 3px; }
+.blind-b.sb { background: #3a2a4d; border-color: #5a3f75; }
+.seat-cards { position: absolute; left: 50%; top: -14px; transform: translate(-50%, -100%); display: flex; gap: 2px; }
+.seat-status { font-size: 10px; color: var(--muted); }
+.seat-status.allin { color: #ffc9c9; }
+.seat-status.win { color: var(--gold); }
+.seat-bet {
+  position: absolute; transform: translate(-50%, -50%);
+  display: flex; align-items: center; gap: 3px;
+  font-size: 11px; color: var(--gold); font-weight: 700;
+  background: rgba(0, 0, 0, .5); border-radius: 999px; padding: 1px 7px;
+}
 
 .card {
   border-radius: 8px; background: #fdfdf7; color: #111;
@@ -147,13 +209,20 @@ input {
   background: rgba(6, 20, 14, .96); border-top: 1px solid #2a3d33;
   padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
 }
-.quicks { display: flex; gap: 6px; margin-bottom: 8px; }
-.quicks button { flex: 1; font-size: 12px; padding: 6px; }
-.slider-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.raise-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+.raise-to { font-size: 24px; font-weight: 800; color: var(--gold); font-variant-numeric: tabular-nums; }
+.raise-bb, .raise-odds { font-size: 12px; color: var(--muted); }
+.raise-odds { margin-left: auto; }
+.info-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.quicks { display: flex; gap: 5px; margin-bottom: 8px; }
+.quicks button { flex: 1; font-size: 12px; padding: 7px 2px; }
+.slider-row { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
 .slider-row input[type=range] { flex: 1; accent-color: var(--gold); }
-.slider-row .amt { width: 92px; text-align: center; padding: 8px; }
+.slider-row .step { width: 40px; padding: 8px 0; font-weight: 700; }
+.slider-row .amt { width: 84px; text-align: center; padding: 8px; }
 .btn-row { display: flex; gap: 8px; }
-.btn-row .act { flex: 1; padding: 16px 4px; font-weight: 700; }
+.btn-row .act { flex: 1; padding: 14px 4px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.btn-row .act b { font-size: 13px; font-variant-numeric: tabular-nums; }
 .act.fold { background: #3a1d1d; border-color: #6b2d2d; }
 .act.check, .act.call { background: #1f3a4d; border-color: #2f5a75; }
 .act.raise { background: var(--gold); color: #22160a; border: none; }
