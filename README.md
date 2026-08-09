@@ -61,8 +61,19 @@ HTTP_PORT=80 HTTPS_PORT=443 PUBLIC_HOST=<你的網域> npm start
 ```
 
 - 沒有憑證時會自動產生自簽憑證放在 `data/certs/`；把 Let's Encrypt 的 `privkey.pem` / `fullchain.pem` 放進同一個目錄即可換成正式憑證。
-- port 80 只做 ACME challenge（`/.well-known/acme-challenge`，檔案放 `data/acme/`）與 308 轉址到 HTTPS。
+- port 80 只做 ACME challenge 與 308 轉址到 HTTPS；`data/acme/` 就是 webroot（certbot `--webroot -w <DATA_DIR>/acme`）。
 - 房間狀態會存到 `data/rooms.json`，重啟後自動還原。
+
+取得正式憑證（以 nip.io 網域為例）：
+
+```bash
+docker run --rm -v holdem-data:/data certbot/certbot certonly --webroot -w /data/acme \
+  -d <ip-with-dashes>.nip.io --agree-tos -m <email> --non-interactive \
+  --config-dir /data/letsencrypt --work-dir /data/le-work --logs-dir /data/le-logs
+# 再把 live/<domain>/{fullchain,privkey}.pem 複製到 /data/certs/ 並重啟 container
+```
+
+Windows + Docker Desktop 注意：若防火牆提示被按過「取消」，會留下 `Docker Desktop Backend` 的 **Block** 規則，外網連不進已發布的 port（LAN 正常）。需停用該 block 規則並改為 allow。
 
 ## 環境變數
 
