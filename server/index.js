@@ -150,6 +150,7 @@ function handleMessage(ws, msg) {
         buyIn: room.config.startingStack,
         connected: true,
         sittingOut: !!room.hand,
+        autoSitOut: !!room.hand,
         clientSeed: crypto.randomBytes(4).toString('hex'),
       };
       room.players.push(player);
@@ -182,9 +183,17 @@ function handleMessage(ws, msg) {
       break;
     case 'sitOut':
       player.sittingOut = !!msg.value;
+      player.autoSitOut = false;
       break;
     case 'startHand': {
       requireHost(room, player);
+      // 牌局進行中加入的人只跳過那一手，下一手自動入座
+      for (const p of room.players) {
+        if (p.autoSitOut) {
+          p.sittingOut = false;
+          p.autoSitOut = false;
+        }
+      }
       const seeds = room.players.filter((p) => !p.sittingOut).map((p) => p.clientSeed);
       startHand(room, seeds);
       break;

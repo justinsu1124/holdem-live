@@ -106,6 +106,12 @@ input {
 }
 @media (min-width: 720px) { .oval { aspect-ratio: 1.35 / 1; max-width: 720px; } }
 
+.oval.crowded { aspect-ratio: 1 / 1.22; }
+.oval.crowded .seat { width: 68px; padding: 18px 2px 4px; }
+.oval.crowded .seat-avatar { width: 28px; height: 28px; font-size: 13px; }
+.oval.crowded .seat-name, .oval.crowded .seat-stack { font-size: 11px; }
+.oval.crowded .oval-center { width: 58%; }
+
 .oval-center {
   position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
   width: 76%; text-align: center;

@@ -4,12 +4,14 @@ import type { Legal } from '../types';
 interface Props {
   legal: Legal;
   bigBlind: number;
+  /** 你這一輪已經下在桌上的籌碼 */
+  myBet: number;
   onAct: (action: string, amount?: number) => void;
 }
 
 const bb = (v: number, big: number) => `${(v / big).toFixed(v % big === 0 ? 0 : 1)}BB`;
 
-export function ActionBar({ legal, bigBlind, onAct }: Props) {
+export function ActionBar({ legal, bigBlind, myBet, onAct }: Props) {
   const { toCall, minRaiseTo, maxRaiseTo, pot, actions } = legal;
   const [raiseTo, setRaiseTo] = useState(minRaiseTo);
   const [open, setOpen] = useState(false);
@@ -22,8 +24,8 @@ export function ActionBar({ legal, bigBlind, onAct }: Props) {
   const canRaise = actions.includes('raise') || actions.includes('bet');
   const raiseLabel = actions.includes('bet') ? '下注' : '加注';
   const clamp = (v: number) => Math.max(minRaiseTo, Math.min(maxRaiseTo, Math.round(v)));
-  // 底池加注：先跟注，再依剩下的底池比例加大
-  const potRaise = (frac: number) => clamp(toCall + Math.round((pot + toCall) * frac));
+  // 底池加注：跟注後再加「跟注後底池」的 frac 倍（raise-to 含自己已下的注）
+  const potRaise = (frac: number) => clamp(myBet + toCall + Math.round((pot + toCall) * frac));
   const potOdds = toCall > 0 ? Math.round((toCall / (pot + toCall)) * 100) : 0;
 
   const quick = [

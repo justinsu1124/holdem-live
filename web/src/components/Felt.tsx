@@ -32,16 +32,21 @@ export function Felt({ state, peek, onPeekChange }: Props) {
     : [...ordered.slice(start), ...ordered.slice(0, start)];
 
   const n = Math.max(seats.length, 2);
+  // 人多時座位往外推、縮小尺寸，才不會壓到中間的公共牌
+  const crowded = n >= 7;
+  const rx = crowded ? 47 : 43;
+  const ry = crowded ? 45 : 42;
+  const board = hand?.board ?? state.lastResult?.board ?? [];
 
   return (
     <div className="felt-oval">
-      <div className="oval">
+      <div className={`oval${crowded ? ' crowded' : ''}`}>
         <div className="oval-center">
           {dealMode && (
             <div className="board">
-              {hand?.board.map((c) => <Card key={c} code={c} size="md" />)}
-              {Array.from({ length: Math.max(0, 5 - (hand?.board.length ?? 0)) }).map((_, i) => (
-                <div key={`slot${i}`} className="card card-md card-slot" />
+              {board.map((c) => <Card key={c} code={c} size={crowded ? 'sm' : 'md'} />)}
+              {Array.from({ length: Math.max(0, 5 - board.length) }).map((_, i) => (
+                <div key={`slot${i}`} className={`card card-${crowded ? 'sm' : 'md'} card-slot`} />
               ))}
             </div>
           )}
@@ -62,12 +67,12 @@ export function Felt({ state, peek, onPeekChange }: Props) {
         {seats.map((p, i) => {
           const angle = (90 + (i * 360) / n) * (Math.PI / 180);
           const seatStyle = {
-            left: `${50 + 43 * Math.cos(angle)}%`,
-            top: `${50 + 42 * Math.sin(angle)}%`,
+            left: `${50 + rx * Math.cos(angle)}%`,
+            top: `${50 + ry * Math.sin(angle)}%`,
           };
           const betStyle = {
-            left: `${50 + 26 * Math.cos(angle)}%`,
-            top: `${50 + 25 * Math.sin(angle)}%`,
+            left: `${50 + (crowded ? 34 : 26) * Math.cos(angle)}%`,
+            top: `${50 + (crowded ? 32 : 25) * Math.sin(angle)}%`,
           };
           const isYou = p.id === you?.id;
           return (

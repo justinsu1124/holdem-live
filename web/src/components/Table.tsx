@@ -160,7 +160,12 @@ export function Table({ state, send, onLeave, connected }: Props) {
       {tab === 'fair' && <Fairness commitment={hand?.commitment} lastResult={state.lastResult} />}
 
       {yourTurn && tab === 'table' && (
-        <ActionBar legal={you!.legal!} bigBlind={state.config.bigBlind} onAct={(a, amt) => send({ type: 'action', action: a, amount: amt })} />
+        <ActionBar
+          legal={you!.legal!}
+          bigBlind={state.config.bigBlind}
+          myBet={state.players.find((p) => p.id === you!.id)?.bet ?? 0}
+          onAct={(a, amt) => send({ type: 'action', action: a, amount: amt })}
+        />
       )}
 
       <nav className="tabbar">
