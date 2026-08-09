@@ -26,7 +26,9 @@ const ENABLE_HTTPS = process.env.ENABLE_HTTPS !== '0';
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 fs.mkdirSync(CERT_DIR, { recursive: true });
-fs.mkdirSync(path.join(DATA_DIR, 'acme'), { recursive: true });
+const ACME_ROOT = path.join(DATA_DIR, 'acme');
+const ACME_CHALLENGE_DIR = path.join(ACME_ROOT, '.well-known', 'acme-challenge');
+fs.mkdirSync(ACME_CHALLENGE_DIR, { recursive: true });
 
 /** @type {Map<string, any>} */
 const rooms = new Map();
@@ -246,7 +248,7 @@ function handleMessage(ws, msg) {
 
 const app = express();
 app.use(express.json());
-app.use('/.well-known/acme-challenge', express.static(path.join(DATA_DIR, 'acme')));
+app.use('/.well-known/acme-challenge', express.static(ACME_CHALLENGE_DIR), express.static(ACME_ROOT));
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, rooms: rooms.size }));
 
@@ -340,7 +342,7 @@ if (ENABLE_HTTPS) {
 
   // plain HTTP: ACME challenges + redirect everything else to HTTPS
   const redirect = express();
-  redirect.use('/.well-known/acme-challenge', express.static(path.join(DATA_DIR, 'acme')));
+  redirect.use('/.well-known/acme-challenge', express.static(ACME_CHALLENGE_DIR), express.static(ACME_ROOT));
   redirect.use((req, res) => {
     const host = (req.headers.host || '').split(':')[0];
     res.redirect(308, `https://${host}${HTTPS_PORT === 443 ? '' : `:${HTTPS_PORT}`}${req.originalUrl}`);
